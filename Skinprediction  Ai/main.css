@@ -1,0 +1,65 @@
+html, body {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-top: -14px;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+html {
+    overflow-x: initial !important;
+  }
+
+
+.container {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+}
+
+.header {
+    color: white;
+    margin: 0;
+    position: relative;
+    background-color: black;
+    width: 100%;
+    height: 550px;
+}
+
+.hdh1 {
+    font-size: 50px;
+}
+
+.TM {
+    position: relative;
+    padding-left: 40px;
+    left: 0;
+    top: 200px;
+    overflow-x: visible;
+    width: 100%;
+    height: 400px;
+    background-color: antiquewhite;  
+
+}
+
+.TMh {
+    position: relative;
+    top: 0;
+    left: 0;
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+.TMi {
+  border: outset 4px white;
+  border-style: solid;
+}
+
+.TMin{
+    position: relative;
+    left: 0;
+    top: -10px;
+}

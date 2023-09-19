@@ -3,75 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teachable Machine Image Model with upload</title>
+    <title>Skin Predictor AI</title>
+    <link rel="stylesheet" href="./main.css">
   </head>
   <body>
-    <img id="imagePreview" style="height: 300px" />
-    <input id="imageUpload" type="file" />
+    <div class="container">
+      <div class="header">
+        <h1 class="hdh1">Skin Predictor by AI </h1>
+        <h1 class="hdh2"></h1>
+      </div>
+      <div class="TM">
+        <div class="TMh">Teachable Machine Image Model</div>
+        <img id="imagePreview" style="height: 300px" class="TMi"/>
+        <input id="imageUpload" type="file" class="TMin"/>
+        <div id="label-container" class="TMl"></div>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+        <script type="text/javascript">
+          // More API functions here:
+          // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
 
-    <div>Teachable Machine Image Model with upload</div>
-    <div id="label-container"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-    <script type="text/javascript">
-      // More API functions here:
-      // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+          // the link to your model provided by Teachable Machine export panel
+          const URL =
+            "https://teachablemachine.withgoogle.com/models/4BnnJBWW3/";
 
-      // the link to your model provided by Teachable Machine export panel
-      const URL = "https://teachablemachine.withgoogle.com/models/4BnnJBWW3/";
+          let model, labelContainer, maxPredictions;
 
-      let model, labelContainer, maxPredictions;
+          // Load the image model
+          async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
 
-      // Load the image model
-      async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+            // load the model and metadata
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
 
-        // load the model and metadata
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+              // and class labels
+              labelContainer.appendChild(document.createElement("div"));
+            }
+          }
 
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) {
-          // and class labels
-          labelContainer.appendChild(document.createElement("div"));
-        }
-      }
+          async function predict() {
+            // predict can take in an image, video or canvas html element
+            var image = document.getElementById("imagePreview");
+            const prediction = await model.predict(image, false);
+            for (let i = 0; i < maxPredictions; i++) {
+              const classPrediction =
+                prediction[i].className +
+                ": " +
+                prediction[i].probability.toFixed(2);
+              labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+          }
+        </script>
 
-      async function predict() {
-        // predict can take in an image, video or canvas html element
-        var image = document.getElementById("imagePreview");
-        const prediction = await model.predict(image, false);
-        for (let i = 0; i < maxPredictions; i++) {
-          const classPrediction =
-            prediction[i].className +
-            ": " +
-            prediction[i].probability.toFixed(2);
-          labelContainer.childNodes[i].innerHTML = classPrediction;
-        }
-      }
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script type="text/javascript">
-      function readURL(input) {
-        if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            $("#imagePreview").attr("src", e.target.result);
-            // $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
-            $("#imagePreview").hide();
-            $("#imagePreview").fadeIn(650);
-          };
-          reader.readAsDataURL(input.files[0]);
-          init().then(() => {
-            predict();
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script type="text/javascript">
+          function readURL(input) {
+            if (input.files && input.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function (e) {
+                $("#imagePreview").attr("src", e.target.result);
+                // $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $("#imagePreview").hide();
+                $("#imagePreview").fadeIn(650);
+              };
+              reader.readAsDataURL(input.files[0]);
+              init().then(() => {
+                predict();
+              });
+            }
+          }
+          $("#imageUpload").change(function () {
+            readURL(this);
           });
-        }
-      }
-      $("#imageUpload").change(function () {
-        readURL(this);
-      });
-    </script>
+        </script>
+      </div>
+    </div>
   </body>
 </html>
